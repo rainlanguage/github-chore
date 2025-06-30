@@ -1,12 +1,12 @@
 name: GitHub PR Chore
-on: push
-  # pull_request:
-  #   types:
-  #     - closed
+on:
+  pull_request:
+    types:
+      - closed
 
 jobs:
   comment-on-merge:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -15,7 +15,7 @@ jobs:
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: context.payload.pull_request.number,
+              issue_number: github.context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.name,
               body: "@coderabbitai assess this PR size with the following criteria and report it in your comment: \n- only include the relevant and main source files and changes in your assessment, for example changes in generated files like lock files should be excluded \n- the  assessment should be in the format of: ADDITIONS=number DELETIONS=number \n- no other text and explanation should be in your comment, just the number of addition and deletions that you have assessed \n- you assessment comment should also not include any of your tips or other sections"
