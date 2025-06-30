@@ -15,7 +15,7 @@ jobs:
         with:
           script: |
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
+              issue_number: context.pull_request.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: "@coderabbitai assess this PR size with the following criteria and report it in your comment: \n- only include the relevant and main source files and changes in your assessment, for example changes in generated files like lock files should be excluded \n- the  assessment should be in the format of: ADDITIONS=number DELETIONS=number \n- no other text and explanation should be in your comment, just the number of addition and deletions that you have assessed \n- you assessment comment should also not include any of your tips or other sections"
