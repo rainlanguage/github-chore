@@ -11,7 +11,7 @@ jobs:
 
     steps:
       - name: Set PR number
-        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
+        run: echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
       - name: Comment on the PR
         uses: actions/github-script@v7
         with:
