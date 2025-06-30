@@ -1,8 +1,8 @@
 name: GitHub PR Chore
-on: push
-  # pull_request:
-  #   types:
-  #     - closed
+on:
+  pull_request:
+    types:
+      - closed
 
 jobs:
   comment-on-merge:
@@ -12,17 +12,16 @@ jobs:
     steps:
       # - name: Set PR number
       #   run: echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
-      - name: Get Pull Request Number
-        id: pr
-        run: echo "PR_NUMBER=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_ENV
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # - name: Get Pull Request Number
+      #   id: pr
+      #   run: echo "PR_NUMBER=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_ENV
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment on the PR
         uses: actions/github-script@v7
         with:
           script: |
-            const prNumber = process.env.PR_NUMBER;
-            console.log(context.payload.number, "qwe", prNumber);
+            console.log(context.payload.pull_request, "qwe", context.issue);
             github.rest.issues.createComment({
               issue_number: undefined,
               owner: context.repo.owner,
