@@ -10,14 +10,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Set PR number
-        run: echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
+      # - name: Set PR number
+      #   run: echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
+      - name: Get Pull Request Number
+        id: pr
+        run: echo "PR_NUMBER=$(gh pr view --json number -q .number || echo "")" >> $GITHUB_ENV
       - name: Comment on the PR
         uses: actions/github-script@v7
         with:
           script: |
             const prNumber = process.env.PR_NUMBER;
-            console.log(prNumber);
+            console.log(context.payload.number, "qwe", prNumber);
             github.rest.issues.createComment({
               issue_number: undefined,
               owner: context.repo.owner,
