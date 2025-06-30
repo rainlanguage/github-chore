@@ -1,4 +1,4 @@
-name: GitHub PR Size Assessment
+name: GitHub PR Assessment
 on:
   workflow_call:
     inputs:
