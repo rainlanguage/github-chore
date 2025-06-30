@@ -1,12 +1,23 @@
 name: GitHub PR Size Assessment Trigger
 on:
-  pull_request:
-    types:
-      - closed
+  workflow_call:
+    inputs:
+      pr_number:
+        required: true
+        type: number
+      repo:
+        required: true
+        type: string
+      owner:
+        required: true
+        type: string
+      merged:
+        required: true
+        type: boolean
 
 jobs:
   assess-pr-size-on-merge:
-    if: github.event.pull_request.merged == true
+    if: inputs.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -18,8 +29,8 @@ jobs:
             const fs = require('fs');
             const body = fs.readFileSync('instructions.txt', 'utf8');
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
+              body,
+              repo: inputs.repo,
+              owner: inputs.owner,
+              issue_number: inputs.pr_number
             })
