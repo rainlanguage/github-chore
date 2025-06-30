@@ -1,12 +1,12 @@
 name: GitHub PR Chore
-on:
-  pull_request:
-    types:
-      - closed
+on: push
+  # pull_request:
+  #   types:
+  #     - closed
 
 jobs:
   comment-on-merge:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
