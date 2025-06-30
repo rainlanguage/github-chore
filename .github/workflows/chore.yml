@@ -10,11 +10,14 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Set PR number
+        run: echo "PR_NUMBER=${{ github.event.pull_request.number }}" >> $GITHUB_ENV
       - name: Comment on the PR
         uses: actions/github-script@v7
         with:
           script: |
-            console.log(context.payload, context.payload.pull, context.payload.pull_request, context.payload.pullRequest);
+            const prNumber = process.env.PR_NUMBER;
+            console.log(prNumber);
             github.rest.issues.createComment({
               issue_number: undefined,
               owner: context.repo.owner,
