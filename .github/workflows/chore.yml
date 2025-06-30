@@ -1,4 +1,4 @@
-name: GitHub PR Size Assessment Trigger
+name: GitHub PR Size Assessment
 on:
   workflow_call:
     inputs:
@@ -16,8 +16,8 @@ on:
         type: boolean
 
 jobs:
-  assess-pr-size-on-merge:
-    # if: inputs.merged == true
+  assess-pr:
+    if: inputs.merged == true
     runs-on: ubuntu-latest
 
     steps:
