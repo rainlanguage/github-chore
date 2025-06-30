@@ -1,12 +1,12 @@
-name: GitHub PR Chore
+name: GitHub PR Size Assessment Trigger
 on:
   pull_request:
     types:
       - closed
 
 jobs:
-  comment-on-merge:
-    # if: github.event.pull_request.merged == true
+  assess-pr-size-on-merge:
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
