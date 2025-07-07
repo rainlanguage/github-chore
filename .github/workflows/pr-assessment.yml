@@ -17,14 +17,14 @@ on:
 
 jobs:
   assess-pr:
-    # if: ${{ inputs.merged == true }}
+    if: ${{ inputs.merged == true }}
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
         with:
           repository: rainlanguage/github-chore
-          ref: 2025-06-30-update-readme
+          ref: main
           token: ${{ secrets.GITHUB_TOKEN }}
       - name: Comment on the PR
         uses: actions/github-script@v7

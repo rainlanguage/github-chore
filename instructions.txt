@@ -1,6 +1,6 @@
-@coderabbitai assess this PR size for the totality of the PR with the following criterias and report it in your comment:
+@coderabbitai assess this PR size classification for the totality of the PR with the following criterias and report it in your comment:
 
-S/M/L PR Classification Guidelines:
+# S/M/L PR Classification Guidelines:
 This guide helps classify merged pull requests by effort and complexity rather than just line count. The goal is to assess the difficulty and scope of changes after they have been completed.
 
 ## Small (S)
@@ -66,7 +66,7 @@ When deciding between sizes, also consider:
 
 ## Notes:
 - the assessment must be for the totality of the PR, that means comparing the base branch to the last commit of the PR 
-- the assessment output must be exactly one of: S, M or L (single-line comment)
+- the assessment output must be exactly one of: S, M or L (single-line comment) in format of: SIZE={S/M/L}
 - do not include any additional text, only the size classification
 - your assessment comment must not include tips or additional sections
 - do NOT tag me or anyone else on your comment
