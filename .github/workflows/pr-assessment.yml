@@ -17,7 +17,7 @@ on:
 
 jobs:
   assess-pr:
-    if: inputs.merged == true
+    # if: ${{ inputs.merged == true }}
     runs-on: ubuntu-latest
 
     steps:
