@@ -66,7 +66,7 @@ When deciding between sizes, also consider:
 
 ## Notes:
 - the assessment must be for the totality of the PR, that means comparing the base branch to the last commit of the PR 
-- the assessment should be in the format of: S/M/ as single comment
-- no other text and explanation should be in your comment, just the size classification
-- you assessment comment should also not include any of your tips or other sections 
+- the assessment output must be exactly one of: S, M or L (single-line comment)
+- do not include any additional text, only the size classification
+- your assessment comment must not include tips or additional sections
 - do NOT tag me or anyone else on your comment
