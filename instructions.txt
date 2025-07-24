@@ -1,0 +1,72 @@
+@coderabbitai assess this PR size classification for the totality of the PR with the following criterias and report it in your comment:
+
+# S/M/L PR Classification Guidelines:
+This guide helps classify merged pull requests by effort and complexity rather than just line count. The goal is to assess the difficulty and scope of changes after they have been completed.
+
+## Small (S)
+
+**Characteristics:**
+- Simple bug fixes, typos, or minor refactoring
+- Single-purpose changes affecting 1-2 files
+- Documentation updates
+- Configuration tweaks
+- Changes that require minimal context to review
+
+**Review Effort:** Would have taken 5-10 minutes
+
+**Examples:**
+- Fix typo in variable name
+- Update README with new instructions
+- Adjust configuration values
+- Simple one-line bug fixes
+- Import statement cleanup
+
+## Medium (M)
+
+**Characteristics:**
+- Feature additions or enhancements
+- Refactoring that touches multiple files but maintains existing behavior
+- Breaking changes with backward compatibility
+- Changes requiring some domain knowledge to review
+
+**Review Effort:** Would have taken 15-30 minutes
+
+**Examples:**
+- Add new feature or component
+- Refactor common utility functions
+- Update dependencies with minor breaking changes
+- Add new component with tests
+- Performance optimizations
+- More complex bug fixes
+
+## Large (L)
+
+**Characteristics:**
+- Major feature implementations
+- Breaking changes or API redesigns
+- Complex refactoring across multiple modules
+- New architectural patterns or significant design changes
+- Changes requiring deep context and multiple review rounds
+
+**Review Effort:** Would have taken 45+ minutes
+
+**Examples:**
+- Complete new feature with frontend/backend changes
+- Protocol upgrades or breaking changes
+- Major architectural refactoring
+- Framework or technology upgrades
+
+## Additional Factors to Consider
+
+When deciding between sizes, also consider:
+
+- **Test coverage impact**: More comprehensive test changes lean toward larger classification
+- **Risk level**: Changes to critical systems bump up a size category
+- **Team familiarity**: Novel patterns or technologies increase complexity
+
+## Notes:
+- the assessment must be for the totality of the PR, that means comparing the base branch to the last commit of the PR 
+- the assessment output must be exactly one of: S, M or L (single-line comment) in format of: SIZE={S/M/L}
+- do not include any additional text, only the size classification
+- your assessment comment must not include tips or additional sections
+- do NOT tag me or anyone else on your comment
