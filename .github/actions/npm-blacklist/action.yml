@@ -1,0 +1,42 @@
+name: 'NPM BlackList Package Checker'
+description: 'Check a project for blacklisted NPM packages and versions'
+
+branding:
+  icon: 'alert-triangle'
+  color: 'red'
+
+inputs:
+  project-path:
+    description: 'Path to the NPM project, example: ./packages/my-npm-project'
+    required: false
+    default: '.'
+  additional-blacklist-file:
+    description: 'Path to an additional blacklist file with list of pkg@version per line, example: ./my-blacklist.txt'
+    required: false
+    default: ''
+  additional-blacklist-pkgs:
+    description: 'Multiline list of additional blacklisted packages, example: pkg@version'
+    required: false
+    default: ''
+  override-blacklist:
+    description: 'Path to blacklist file to override the default known blacklist'
+    required: false
+    
+
+runs:
+    using: 'composite'
+    steps:
+      - name: Run NPM Blacklist Checker
+        shell: bash
+        env:
+          PROJECT_PATH: ${{ inputs['project-path'] }}
+          DEFAULT_BLACKLIST: ${{ github.action_path }}/blacklist.txt
+          ADDITIONAL_BLACKLIST_FILE: ${{ inputs['additional-blacklist-file'] }}
+          ADDITIONAL_BLACKLIST_PKGS: ${{ inputs['additional-blacklist-pkgs'] }}
+          OVERRIDE_BLACKLIST: ${{ inputs['override-blacklist'] }}
+        run: |
+          ${{ github.action_path }}/checker.sh \
+          "${PROJECT_PATH}" \
+          "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
+          "${ADDITIONAL_BLACKLIST_FILE}" \
+          "${ADDITIONAL_BLACKLIST_PKGS}"
