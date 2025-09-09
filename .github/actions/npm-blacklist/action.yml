@@ -1,5 +1,5 @@
 name: 'NPM BlackList Package Checker'
-description: 'Check a project for blacklisted NPM packages and versions'
+description: 'Check a project for blacklisted NPM packages and versions, this action needs to run after NPM dependencies are installed (`npm ci` or `npm install`)'
 
 branding:
   icon: 'alert-triangle'

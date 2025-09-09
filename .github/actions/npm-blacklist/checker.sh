@@ -85,7 +85,7 @@ while IFS= read -r line; do
     echo "Checking dependency tree for $pkg_name@$pkg_version ..."
     
     # Run npm ls in the specified directory and check if the specific version is in the output
-    npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null)
+    npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null || true)
 
     if grep -q "$pkg_name@$pkg_version" <<< "$npm_output"; then
         alerts+=("🚨 ALERT: Package $pkg_name version $pkg_version is present in the dependency tree of the project!")
