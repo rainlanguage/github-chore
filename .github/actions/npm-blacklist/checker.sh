@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euxo pipefail
+set -euo pipefail
 
 # Get the path from command line argument, default to current path
 project_path="${1:-.}"
@@ -87,7 +87,7 @@ while IFS= read -r line; do
     # Run npm ls in the specified directory and check if the specific version is in the output
     npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null)
 
-    if echo "$npm_output" | grep -q "$pkg_name"@"$pkg_version" || true; then
+    if grep -q "$pkg_name@$pkg_version" <<< "$npm_output"; then
         alerts+=("🚨 ALERT: Package $pkg_name version $pkg_version is present in the dependency tree of the project!")
         found_matches=true
     fi
