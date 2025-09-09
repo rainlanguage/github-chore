@@ -6,22 +6,22 @@ branding:
   color: 'red'
 
 inputs:
-  project-path:
+  working-directory:
     description: 'Path to the NPM project, example: ./packages/my-npm-project'
     required: false
     default: '.'
   additional-blacklist-file:
-    description: 'Path to an additional blacklist file with list of pkg@version per line, example: ./my-blacklist.txt'
+    description: 'Path to an additional file with list of packages in form of "pkg@version", example: ./my-blacklist.txt'
     required: false
     default: ''
   additional-blacklist-pkgs:
-    description: 'Multiline list of additional blacklisted packages, example: pkg@version'
+    description: 'List of additional packages (separated by YAML multiline), example: pkg@version'
     required: false
     default: ''
   override-blacklist:
-    description: 'Path to blacklist file to override the default known blacklist'
+    description: 'Path to a file with list of packages in form of "pkg@version" to override the default known blacklist'
     required: false
-    
+
 
 runs:
     using: 'composite'
@@ -29,14 +29,14 @@ runs:
       - name: Run NPM Blacklist Checker
         shell: bash
         env:
-          PROJECT_PATH: ${{ inputs['project-path'] }}
+          WORKING_DIRECTORY: ${{ inputs['working-directory'] }}
           DEFAULT_BLACKLIST: ${{ github.action_path }}/blacklist.txt
           ADDITIONAL_BLACKLIST_FILE: ${{ inputs['additional-blacklist-file'] }}
           ADDITIONAL_BLACKLIST_PKGS: ${{ inputs['additional-blacklist-pkgs'] }}
           OVERRIDE_BLACKLIST: ${{ inputs['override-blacklist'] }}
         run: |
           ${{ github.action_path }}/checker.sh \
-          "${PROJECT_PATH}" \
+          "${WORKING_DIRECTORY}" \
           "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
           "${ADDITIONAL_BLACKLIST_FILE}" \
           "${ADDITIONAL_BLACKLIST_PKGS}"

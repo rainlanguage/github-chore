@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -euxo pipefail
+
 # Get the path from command line argument, default to current path
 project_path="${1:-.}"
 
@@ -12,6 +14,12 @@ fi
 # Check if package.json exists in the directory
 if [ ! -f "$project_path/package.json" ]; then
     echo "❌ ERROR: No package.json found in '$project_path'!"
+    exit 1
+fi
+
+# Ensure dependencies are installed
+if [ ! -d "$project_path/node_modules" ]; then
+    echo "❌ ERROR: node_modules not found in '$project_path'. Install deps first (e.g., 'npm ci')."
     exit 1
 fi
 
@@ -34,15 +42,14 @@ additional_blacklist_file="${3}"
 additional_blacklist_pkgs="${4}"
 
 # Build full blacklist
-blacklist=""
-# Check if blacklist file exists
-if [ -f "$blacklist_file" ]; then
-    blacklist=$(cat "$blacklist_file")
-fi
+blacklist=$(cat "$blacklist_file")
 
 if [ -n "$additional_blacklist_file" ] && [ -f "$additional_blacklist_file" ]; then
     blacklist="$blacklist"$'\n'"$(cat "$additional_blacklist_file")"
+elif [ -n "$additional_blacklist_file" ]; then
+    echo "⚠️ Warning: Additional blacklist file '$additional_blacklist_file' not found; ignoring."
 fi
+
 if [ -n "$additional_blacklist_pkgs" ]; then
     blacklist="$blacklist"$'\n'"$additional_blacklist_pkgs"
 fi
@@ -75,12 +82,12 @@ while IFS= read -r line; do
     # Remove any trailing whitespace from version
     pkg_version=$(echo "$pkg_version" | sed 's/[[:space:]]*$//')
     
-    echo "Checking $pkg_name@$pkg_version..."
+    echo "Checking dependency tree for $pkg_name@$pkg_version ..."
     
     # Run npm ls in the specified directory and check if the specific version is in the output
-    npm_output=$(cd "$project_path" && npm ls "$pkg_name" 2>/dev/null)
+    npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null)
 
-    if echo "$npm_output" | grep -q "$pkg_name"@"$pkg_version"; then
+    if echo "$npm_output" | grep -q "$pkg_name"@"$pkg_version" || true; then
         alerts+=("🚨 ALERT: Package $pkg_name version $pkg_version is present in the dependency tree of the project!")
         found_matches=true
     fi
