@@ -36,10 +36,10 @@ if [ ! -f "$blacklist_file" ]; then
 fi
 
 # Get extra blacklist file from third argument (optional)
-additional_blacklist_file="${3}"
+additional_blacklist_file="${3:-""}"
 
 # Get extra blacklist string from fourth argument (optional)
-additional_blacklist_pkgs="${4}"
+additional_blacklist_pkgs="${4:-""}"
 
 # Build full blacklist
 blacklist=$(cat "$blacklist_file")
@@ -82,14 +82,15 @@ while IFS= read -r line; do
     # Remove any trailing whitespace from version
     pkg_version=$(echo "$pkg_version" | sed 's/[[:space:]]*$//')
     
-    echo "Checking dependency tree for $pkg_name@$pkg_version ..."
-    
     # Run npm ls in the specified directory and check if the specific version is in the output
     npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null || true)
 
     if grep -q "$pkg_name@$pkg_version" <<< "$npm_output"; then
         alerts+=("🚨 ALERT: Package $pkg_name version $pkg_version is present in the dependency tree of the project!")
         found_matches=true
+        echo "Checked dependency tree for $pkg_name@$pkg_version ❌"
+    else
+        echo "Checked dependency tree for $pkg_name@$pkg_version ✅"
     fi
     
     echo "" # Empty line for readability
