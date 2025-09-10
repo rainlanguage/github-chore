@@ -93,8 +93,6 @@ while IFS= read -r line; do
         echo "✅ - Checked dependency tree for '$pkg_name@$pkg_version'"
     fi
     
-    echo "" # Empty line for readability
-    
 done <<< "$blacklist"
 
 echo "Package version check complete for: $project_path"
