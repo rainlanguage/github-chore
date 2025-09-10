@@ -1,0 +1,41 @@
+name: 'NPM BlackList Package Checker'
+description: 'Check a project for blacklisted NPM packages and versions, this action needs to run after NPM dependencies are installed (`npm ci` or `npm install`)'
+
+branding:
+  icon: 'alert-triangle'
+  color: 'red'
+
+inputs:
+  working-directory:
+    description: 'Path to the NPM project, example: ./packages/my-npm-project'
+    required: false
+    default: '.'
+  additional-blacklist-file:
+    description: 'Path to an additional file with list of packages in form of "pkg@version", example: ./my-blacklist.txt'
+    required: false
+    default: ''
+  additional-blacklist-pkgs:
+    description: 'List of additional packages (separated by YAML multiline), example: pkg@version'
+    required: false
+    default: ''
+  override-blacklist:
+    description: 'Path to a file with list of packages in form of "pkg@version" to override the default known blacklist'
+    required: false
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Run NPM Blacklist Checker
+      shell: bash
+      env:
+        WORKING_DIRECTORY: ${{ inputs['working-directory'] }}
+        DEFAULT_BLACKLIST: ${{ github.action_path }}/blacklist.txt
+        ADDITIONAL_BLACKLIST_FILE: ${{ inputs['additional-blacklist-file'] }}
+        ADDITIONAL_BLACKLIST_PKGS: ${{ inputs['additional-blacklist-pkgs'] }}
+        OVERRIDE_BLACKLIST: ${{ inputs['override-blacklist'] }}
+      run: |
+        ${{ github.action_path }}/checker.sh \
+        "${WORKING_DIRECTORY}" \
+        "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
+        "${ADDITIONAL_BLACKLIST_FILE}" \
+        "${ADDITIONAL_BLACKLIST_PKGS}"
