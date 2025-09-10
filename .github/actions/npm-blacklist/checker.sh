@@ -60,7 +60,7 @@ fi
 found_matches=false
 alerts=() # Array to store alert messages
 
-echo "🔍 Checking packages in: $project_path"
+echo "🔍 Checking for blacklisted packages in '$project_path' dependency tree..."
 echo ""
 
 # Read the embedded data line by line
@@ -86,11 +86,11 @@ while IFS= read -r line; do
     npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null || true)
 
     if grep -q "$pkg_name@$pkg_version" <<< "$npm_output"; then
-        alerts+=("🚨 ALERT: Package $pkg_name version $pkg_version is present in the dependency tree of the project!")
+        alerts+=("🚨 ALERT: Package '$pkg_name' version '$pkg_version' is present in the dependency tree!")
         found_matches=true
-        echo "Checked dependency tree for $pkg_name@$pkg_version ❌"
+        echo "❌ - Checked dependency tree for '$pkg_name@$pkg_version'"
     else
-        echo "Checked dependency tree for $pkg_name@$pkg_version ✅"
+        echo "✅ - Checked dependency tree for '$pkg_name@$pkg_version'"
     fi
     
     echo "" # Empty line for readability

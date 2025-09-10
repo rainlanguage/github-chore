@@ -22,21 +22,20 @@ inputs:
     description: 'Path to a file with list of packages in form of "pkg@version" to override the default known blacklist'
     required: false
 
-
 runs:
-    using: 'composite'
-    steps:
-      - name: Run NPM Blacklist Checker
-        shell: bash
-        env:
-          WORKING_DIRECTORY: ${{ inputs['working-directory'] }}
-          DEFAULT_BLACKLIST: ${{ github.action_path }}/blacklist.txt
-          ADDITIONAL_BLACKLIST_FILE: ${{ inputs['additional-blacklist-file'] }}
-          ADDITIONAL_BLACKLIST_PKGS: ${{ inputs['additional-blacklist-pkgs'] }}
-          OVERRIDE_BLACKLIST: ${{ inputs['override-blacklist'] }}
-        run: |
-          ${{ github.action_path }}/checker.sh \
-          "${WORKING_DIRECTORY}" \
-          "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
-          "${ADDITIONAL_BLACKLIST_FILE}" \
-          "${ADDITIONAL_BLACKLIST_PKGS}"
+  using: 'composite'
+  steps:
+    - name: Run NPM Blacklist Checker
+      shell: bash
+      env:
+        WORKING_DIRECTORY: ${{ inputs['working-directory'] }}
+        DEFAULT_BLACKLIST: ${{ github.action_path }}/blacklist.txt
+        ADDITIONAL_BLACKLIST_FILE: ${{ inputs['additional-blacklist-file'] }}
+        ADDITIONAL_BLACKLIST_PKGS: ${{ inputs['additional-blacklist-pkgs'] }}
+        OVERRIDE_BLACKLIST: ${{ inputs['override-blacklist'] }}
+      run: |
+        ${{ github.action_path }}/checker.sh \
+        "${WORKING_DIRECTORY}" \
+        "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
+        "${ADDITIONAL_BLACKLIST_FILE}" \
+        "${ADDITIONAL_BLACKLIST_PKGS}"
