@@ -63,6 +63,9 @@ alerts=() # Array to store alert messages
 echo "🔍 Checking for blacklisted packages in '$project_path' dependency tree..."
 echo ""
 
+# Run npm ls in the specified directory and get the full dependency tree
+dep_tree=$(cd "$project_path" && npm ls --all --silent 2>/dev/null || true)
+
 # Read the embedded data line by line
 while IFS= read -r line; do
     # Skip empty lines and lines starting with #
@@ -81,11 +84,8 @@ while IFS= read -r line; do
     
     # Remove any trailing whitespace from version
     pkg_version=$(echo "$pkg_version" | sed 's/[[:space:]]*$//')
-    
-    # Run npm ls in the specified directory and check if the specific version is in the output
-    npm_output=$(cd "$project_path" && npm ls "$pkg_name" --all 2>/dev/null || true)
 
-    if grep -q "$pkg_name@$pkg_version" <<< "$npm_output"; then
+    if grep -q "$pkg_name@$pkg_version" <<< "$dep_tree"; then
         alerts+=("🚨 ALERT: Package '$pkg_name' version '$pkg_version' is present in the dependency tree!")
         found_matches=true
         echo "❌ - Checked dependency tree for '$pkg_name@$pkg_version'"
