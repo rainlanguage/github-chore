@@ -76,7 +76,7 @@ while IFS= read -r line; do
     # Parse package name and version
     if [[ "$line" =~ ^(@?[^@[:space:]]+)([@[:space:]]+(.+))?$ ]]; then
         pkg_name="${BASH_REMATCH[1]}"
-        pkg_version="${BASH_REMATCH[2]:-''}"
+        pkg_version="${BASH_REMATCH[3]:-}"
     else
         echo "Warning: Invalid format in line: $line"
         continue
