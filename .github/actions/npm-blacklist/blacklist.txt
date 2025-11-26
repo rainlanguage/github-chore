@@ -157,7 +157,7 @@ wrap-ansi@9.0.1
 @dev-blinq/cucumber-js@1.0.131
 @dev-blinq/cucumber_client@1.0.738
 @dev-blinq/ui-systems@1.0.93
-@elsedev/react-csr-sdk,
+@elsedev/react-csr-sdk
 @ensdomains/address-encoder@1.1.5
 @ensdomains/blacklist@1.0.1
 @ensdomains/buffer@0.1.2
@@ -700,7 +700,7 @@ capacitor-plugin-purchase@0.1.1
 capacitor-plugin-scgssigninwithgoogle@0.0.5
 capacitor-purchase-history@0.0.10
 capacitor-voice-recorder-wav@6.0.3
-cbre-flow-common,
+cbre-flow-common
 ceviz@0.0.5
 chrome-extension-downloads@0.0.3
 chrome-extension-downloads@0.0.4
@@ -1057,7 +1057,7 @@ upload-to-play-store@1.0.1
 url-encode-decode@1.0.2
 url-encode-decode@1.0.1
 use-unsaved-changes@1.0.9
-utilitas,
+utilitas
 v-plausible@1.2.1
 valid-south-african-id@1.0.3
 valuedex-sdk@3.0.5
