@@ -107,7 +107,7 @@ results_file=$(mktemp)
 
 # Run checks in parallel
 declare -a pids  # More explicit array declaration
-max_jobs=10 # number of max concurrent jobs
+max_jobs=5 # number of max concurrent jobs
 current_jobs=0
 
 while IFS= read -r line; do
