@@ -81,7 +81,7 @@ check_package() {
     if grep -q "$pkg_name@$pkg_version" "$dep_tree_file"; then
         echo "ALERT:$pkg_name@$pkg_version"
         echo "❌ - Checked dependency tree for '$pkg_name@$pkg_version'" >&2
-        return 1
+        return 0
     else
         echo "✅ - Checked dependency tree for '$pkg_name@$pkg_version'" >&2
         return 0
@@ -106,13 +106,13 @@ export -f check_package
 results_file=$(mktemp)
 
 # Run checks in parallel
-declare -a pids  # More explicit array declaration
-max_jobs=1 # number of max concurrent jobs
+pids=()  # More explicit array declaration
+max_jobs=20 # number of max concurrent jobs
 current_jobs=0
 
 while IFS= read -r line; do
     check_package "$line" "$dep_tree_file" >> "$results_file" &
-    pids[current_jobs]=$!
+    pids+=($!)
     ((current_jobs++))
     
     # Wait for batch completion
