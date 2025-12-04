@@ -143,6 +143,9 @@ while IFS= read -r result; do
     fi
 done < "$results_file"
 
+# Cleanup
+rm -f "$dep_tree_file" "$blacklist_file_temp" "$results_file"
+
 echo "Package version check complete for: $project_path"
 
 # Exit with error code if any matches were found
@@ -157,6 +160,3 @@ else
     echo "✅ No vulnerable package versions found."
     exit 0
 fi
-
-# Cleanup
-rm -f "$dep_tree_file" "$blacklist_file_temp" "$results_file"
