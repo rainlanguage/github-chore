@@ -56,44 +56,92 @@ fi
 
 # ---
 
-# Track if any matches were found
-found_matches=false
-alerts=() # Array to store alert messages
-
-echo "🔍 Checking for blacklisted packages in '$project_path' dependency tree..."
-echo ""
-
-# Run npm ls in the specified directory and get the full dependency tree
-dep_tree=$(cd "$project_path" && npm ls --all --silent 2>/dev/null || true)
-
-# Read the embedded data line by line
-while IFS= read -r line; do
+# Replace the while loop with this more portable version:
+check_package() {
+    local line="$1"
+    local dep_tree_file="$2"
+    
     # Skip empty lines and lines starting with #
     if [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]]; then
-        continue
+        return 0
     fi
     
-    # Parse package name and version
+    # Parse package name and version  
     if [[ "$line" =~ ^(@?[^@[:space:]]+)([@[:space:]]+(.+))?$ ]]; then
         pkg_name="${BASH_REMATCH[1]}"
         pkg_version="${BASH_REMATCH[3]:-}"
     else
-        echo "Warning: Invalid format in line: $line"
-        continue
+        echo "Warning: Invalid format in line: $line" >&2
+        return 0
     fi
     
     # Remove any trailing whitespace from version
     pkg_version=$(echo "$pkg_version" | sed 's/[[:space:]]*$//')
 
-    if grep -q "$pkg_name@$pkg_version" <<< "$dep_tree"; then
-        alerts+=("🚨 ALERT: Package '$pkg_name' version '$pkg_version' is present in the dependency tree!")
-        found_matches=true
-        echo "❌ - Checked dependency tree for '$pkg_name@$pkg_version'"
+    if grep -q "$pkg_name@$pkg_version" "$dep_tree_file"; then
+        echo "ALERT:$pkg_name@$pkg_version"
+        echo "❌ - Checked dependency tree for '$pkg_name@$pkg_version'" >&2
+        return 1
     else
-        echo "✅ - Checked dependency tree for '$pkg_name@$pkg_version'"
+        echo "✅ - Checked dependency tree for '$pkg_name@$pkg_version'" >&2
+        return 0
     fi
+}
+
+echo "🔍 Checking for blacklisted packages in '$project_path' dependency tree..."
+echo ""
+
+# # Run npm ls in the specified directory and get the full dependency tree
+dep_tree=$(cd "$project_path" && npm ls --all --silent 2>/dev/null || true)
+
+# Store dependency tree in a temp file
+dep_tree_file=$(mktemp)
+echo "$dep_tree" > "$dep_tree_file"
+
+# Store blacklist in temp file too
+blacklist_file_temp=$(mktemp)
+echo "$blacklist" > "$blacklist_file_temp"
+
+export -f check_package
+results_file=$(mktemp)
+
+# Run checks in parallel
+declare -a pids  # More explicit array declaration
+max_jobs=1000 # number of max concurrent jobs
+current_jobs=0
+
+while IFS= read -r line; do
+    check_package "$line" "$dep_tree_file" >> "$results_file" &
+    pids[current_jobs]=$!
+    ((current_jobs++))
     
-done <<< "$blacklist"
+    # Wait for batch completion
+    if (( current_jobs >= max_jobs )); then
+        for pid in "${pids[@]}"; do
+            wait "$pid"
+        done
+        pids=()
+        current_jobs=0
+    fi
+done < "$blacklist_file_temp"
+
+# Wait for remaining processes
+for pid in "${pids[@]}"; do
+    wait "$pid" 2>/dev/null || true
+done
+
+# # Track if any matches were found
+found_matches=false
+alerts=()
+
+# Collect alerts
+while IFS= read -r result; do
+    if [[ "$result" =~ ^ALERT:(.+)$ ]]; then
+        pkg="${BASH_REMATCH[1]}"
+        alerts+=("🚨 ALERT: Package '$pkg' is present in the dependency tree!")
+        found_matches=true
+    fi
+done < "$results_file"
 
 echo "Package version check complete for: $project_path"
 
@@ -109,3 +157,6 @@ else
     echo "✅ No vulnerable package versions found."
     exit 0
 fi
+
+# Cleanup
+rm -f "$dep_tree_file" "$blacklist_file_temp" "$results_file"
