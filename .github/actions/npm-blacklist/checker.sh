@@ -110,6 +110,7 @@ pids=()  # More explicit array declaration
 max_jobs=20 # number of max concurrent jobs
 current_jobs=0
 
+# Disable 'exit on error' for the parallel section to avoid early aborts on CI
 set +e
 
 while IFS= read -r line; do
@@ -132,6 +133,7 @@ for pid in "${pids[@]}"; do
     wait "$pid" 2>/dev/null || true
 done
 
+# Re‑enable strict mode
 set -e
 
 # # Track if any matches were found
