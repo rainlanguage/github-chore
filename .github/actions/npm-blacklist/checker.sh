@@ -112,7 +112,7 @@ current_jobs=0
 
 while IFS= read -r line; do
     check_package "$line" "$dep_tree_file" >> "$results_file" &
-    pids+=($!)
+    pids+=("$!")
     ((current_jobs++))
     
     # Wait for batch completion
