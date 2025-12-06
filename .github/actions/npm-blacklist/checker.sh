@@ -110,6 +110,8 @@ pids=()  # More explicit array declaration
 max_jobs=20 # number of max concurrent jobs
 current_jobs=0
 
+set +e
+
 while IFS= read -r line; do
     check_package "$line" "$dep_tree_file" >> "$results_file" &
     pids+=("$!")
@@ -129,6 +131,8 @@ done < "$blacklist_file_temp"
 for pid in "${pids[@]}"; do
     wait "$pid" 2>/dev/null || true
 done
+
+set -e
 
 # # Track if any matches were found
 found_matches=false
