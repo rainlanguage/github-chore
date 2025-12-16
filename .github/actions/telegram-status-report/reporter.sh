@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-STATUS="${STATUS:-unknown}"
+STATUS="${STATUS:-"undefined status"}"
 JOB="${JOB_NAME:-$GITHUB_JOB}"
 MSG="${EXTRA_MESSAGE:-}"
 
