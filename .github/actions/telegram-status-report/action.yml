@@ -28,7 +28,7 @@ runs:
   using: composite
   steps:
     - shell: bash
-      run: "${{ github.action_path }}/notify.sh"
+      run: "${{ github.action_path }}/reporter.sh"
       env:
         STATUS: ${{ inputs.status }}
         JOB_NAME: ${{ inputs.job-name }}
