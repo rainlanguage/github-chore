@@ -6,6 +6,12 @@ branding:
   color: 'red'
 
 inputs:
+  telegram-bot-token:
+    description: Telegram bot API token
+    required: true
+  telegram-chat-id:
+    description: The telegram channel ID to send reports to
+    required: true
   status:
     description: Job status (success, failure, cancelled)
     required: true
@@ -17,12 +23,6 @@ inputs:
     description: Extra message to append
     required: false
     default: ""
-  telegram-bot-token:
-    description: Telegram bot API token
-    required: true
-  telegram-chat-id:
-    description: The telegram channel ID to send reports to
-    required: true
 
 runs:
   using: composite
@@ -32,11 +32,12 @@ runs:
       if: ${{ github.ref_name == 'main' || github.ref_name == 'master' }}
       run: "${{ github.action_path }}/reporter.sh"
       env:
+        TELEGRAM_BOT_TOKEN: ${{ inputs.telegram-bot-token }}
+        TELEGRAM_CHAT_ID: ${{ inputs.telegram-chat-id }}
         STATUS: ${{ inputs.status }}
         JOB_NAME: ${{ inputs.job-name }}
         EXTRA_MESSAGE: ${{ inputs.message }}
-        TELEGRAM_BOT_TOKEN: ${{ inputs.telegram-bot-token }}
-        TELEGRAM_CHAT_ID: ${{ inputs.telegram-chat-id }}
+
         GITHUB_REPOSITORY: ${{ github.repository }}
         GITHUB_WORKFLOW: ${{ github.workflow }}
         GITHUB_JOB: ${{ github.job }}
