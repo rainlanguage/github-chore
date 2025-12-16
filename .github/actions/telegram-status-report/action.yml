@@ -28,6 +28,8 @@ runs:
   using: composite
   steps:
     - shell: bash
+      # only run for main branch
+      if: github.ref_name == 'main' || github.ref_name == 'master'
       run: "${{ github.action_path }}/reporter.sh"
       env:
         STATUS: ${{ inputs.status }}
