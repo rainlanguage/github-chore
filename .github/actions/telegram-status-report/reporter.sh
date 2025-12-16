@@ -33,9 +33,8 @@ RES=$(curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMes
 
 # check if sent successfully
 if echo "$RES" | grep -q '"ok":false'; then
-    echo "❌ Failed to send Telegram message"
+    echo "❌ Failed to send Telegram message!"
     echo "$RES"
     exit 1
 fi
-
-echo "✅ Telegram message sent successfully"
+echo "✅ Telegram message sent successfully!"
