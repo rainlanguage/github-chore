@@ -18,9 +18,9 @@ if [ "$STATUS" = "success" ]; then exit 0; fi
 # build msg text
 TEXT="$EMOJI *CI ${STATUS}*
 Repo: \`${GITHUB_REPOSITORY}\`
+Branch: \`${GITHUB_REF_NAME}\`
 Workflow: \`${GITHUB_WORKFLOW}\`
 Job: \`${JOB}\`
-Branch: \`${GITHUB_REF_NAME}\`
 Commit: \`${GITHUB_SHA}\`
 ${MSG}
 Logs: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
