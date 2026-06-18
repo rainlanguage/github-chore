@@ -10,6 +10,15 @@ inputs:
     description: 'Path to the NPM project, example: ./packages/my-npm-project'
     required: false
     default: '.'
+  working-directories:
+    description: >-
+      Whitespace-separated list of NPM project paths to scan in one invocation,
+      example: a YAML multiline of ". packages/foo packages/bar". Takes
+      precedence over `working-directory` when set; the checker runs against
+      every listed directory and fails if any of them resolves a blacklisted
+      package.
+    required: false
+    default: ''
   additional-blacklist-file:
     description: 'Path to an additional file with list of packages in form of "pkg@version", example: ./my-blacklist.txt'
     required: false
@@ -29,13 +38,25 @@ runs:
       shell: bash
       env:
         WORKING_DIRECTORY: ${{ inputs['working-directory'] }}
+        WORKING_DIRECTORIES: ${{ inputs['working-directories'] }}
         DEFAULT_BLACKLIST: ${{ github.action_path }}/blacklist.txt
         ADDITIONAL_BLACKLIST_FILE: ${{ inputs['additional-blacklist-file'] }}
         ADDITIONAL_BLACKLIST_PKGS: ${{ inputs['additional-blacklist-pkgs'] }}
         OVERRIDE_BLACKLIST: ${{ inputs['override-blacklist'] }}
+      # `working-directories` (whitespace-separated) lets one action call scan
+      # several NPM projects from a single installed dependency tree; it takes
+      # precedence over the singular `working-directory`. Word-splitting the
+      # list is intentional, so IFS-splitting is left on for the loop. Every
+      # directory is checked even if an earlier one fails, and a non-zero exit
+      # from any directory fails the step.
       run: |
-        ${{ github.action_path }}/checker.sh \
-        "${WORKING_DIRECTORY}" \
-        "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
-        "${ADDITIONAL_BLACKLIST_FILE}" \
-        "${ADDITIONAL_BLACKLIST_PKGS}"
+        dirs="${WORKING_DIRECTORIES:-$WORKING_DIRECTORY}"
+        rc=0
+        for dir in $dirs; do
+          "${{ github.action_path }}/checker.sh" \
+            "$dir" \
+            "${OVERRIDE_BLACKLIST:-$DEFAULT_BLACKLIST}" \
+            "${ADDITIONAL_BLACKLIST_FILE}" \
+            "${ADDITIONAL_BLACKLIST_PKGS}" || rc=1
+        done
+        exit "$rc"
